@@ -5,54 +5,57 @@ import pandas as pd
 idx = pd.IndexSlice
 movies = pd.read_csv("dados/movies.csv", index_col=['movieId'])
 ratings = pd.read_csv("dados/ratings.csv")
-all_ratings = ratings["movieId"].value_counts()
-movies['allRatings'] = all_ratings
+quantidade_de_avaliacoes = ratings["movieId"].value_counts()
+movies['ratingsCount'] = quantidade_de_avaliacoes
+
 
 # Métodos Auxiliares
-def getRatingByUser(usuario):
-    """Retorna todos os ratings que o usuário (passado por parametro) deu para os filme.
+def get_notas_por_usuario(usuario):
+    """
+    Retorna todos os ratings que o usuário (passado por parametro) deu
+    para os filme.
 
     Keyword arguments:
     usuario -- id do usuário
-
     """
 
-    rating_by_user = ratings.query("userId==%d" % usuario)
-    rating_by_user = rating_by_user[["movieId", "rating", "userId"]].set_index("movieId")
-    return rating_by_user
+    notas_por_usuario = ratings.query(f"userId=={usuario}")
+    notas_por_usuario = notas_por_usuario[
+        ["movieId", "rating", "userId"]].set_index("movieId")
+    return notas_por_usuario
 
 
-def getAllUsersId():
-  """Retorna todos os id de todos os usários.
-
-  """
-
-  all_user_id = ratings["userId"].unique()
-  return all_user_id
-
-
-def getAllRatings():
-    """Retorna todos os ratings de todos os usários.
-
+def get_id_todos_os_usuarios():
+    """
+    Retorna os id de todos os usários.
     """
 
-    all_rating = ratings
-    return all_rating
+    id_todos_os_usuarios = ratings["userId"].unique()
+    return id_todos_os_usuarios
 
 
-def getAllMovies():
-    """Retorna todos os filmes.
+def get_todas_as_notas():
+    """
+    Retorna todos os notas de todos os usários para todos os filmes.
+    """
+    todas_as_notas = ratings
+    return todas_as_notas
 
+
+def get_todos_os_filmes():
+    """
+    Retorna todos os filmes.
     """
 
-    all_movies = movies[["title", "allRatings"]]
-    return all_movies
+    todos_os_filmes = movies[["title", "ratingsCount"]]
+    return todos_os_filmes
 
 
-def getMovies50Rates():
-    """Retorna somente os filmes com 50 ou mais votos.
-
+def get_filmes_50_votos_ou_mais():
     """
-    all_movies = movies.sort_values("allRatings", ascending=False)
-    movies_50_rates = all_movies.query("allRatings >= 50")
+    Retorna somente os filmes com 50 ou mais votos.
+    """
+    all_movies = movies.sort_values("ratingsCount", ascending=False)
+    movies_50_rates = all_movies.query("ratingsCount >= 50")
     return movies_50_rates
+
