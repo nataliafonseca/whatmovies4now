@@ -92,3 +92,18 @@ def mais_proximos(usuario_raiz, qntd_usuarios_mais_proximos=10,
     maior_similaridade = maior_similaridade.drop(usuario_raiz, errors="ignore")
     maior_similaridade = maior_similaridade.head(qntd_usuarios_mais_proximos)
     return maior_similaridade
+
+
+def gerarGrafo(usuario_raiz):
+    grafo = ut.lerGrafo()
+    all_users = ut.get_id_todos_os_usuarios()
+
+    distancia_entre_usuarios = distancia_um_para_todos(usuario_raiz)
+    lista_distancia = list(distancia_entre_usuarios["distancia"])
+
+    for x in range(1, len(all_users)+1):
+        grafo[str(f"{x}")] = []
+
+    grafo[str(f"{usuario_raiz}")] = lista_distancia
+    return grafo
+

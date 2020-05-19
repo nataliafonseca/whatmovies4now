@@ -66,4 +66,3 @@ def recomendar_para_usuario(usuario, qntd_usuarios_analisados=None, qntd_usuario
     # método
     return recomendacoes.head(qntd_recomendacoes)
 
-
