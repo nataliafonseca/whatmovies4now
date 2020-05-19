@@ -1,7 +1,9 @@
 # Imports necessários
 import numpy as np
-import util as ut
 import pandas as pd
+import util
+from grafo import Grafo
+from jsonpickle import encode
 
 
 # Funções para o calculo de similaridade
@@ -31,8 +33,8 @@ def distancia_dois_usuarios(usuario_raiz, usuario_destino, qntd_min_filmes=5):
     comparação, default: 5 filmes
     """
 
-    rating_raiz = ut.get_notas_por_usuario(usuario_raiz)
-    rating_outros = ut.get_notas_por_usuario(usuario_destino)
+    rating_raiz = util.get_notas_por_usuario(usuario_raiz)
+    rating_outros = util.get_notas_por_usuario(usuario_destino)
     notas_de_filmes_em_comum = rating_raiz.join(rating_outros, lsuffix="_raiz",
                                                 rsuffix="_destino").dropna()
     if len(notas_de_filmes_em_comum) < qntd_min_filmes:
@@ -56,12 +58,40 @@ def distancia_um_para_todos(usuario_raiz, qntd_usuarios_analisados=None):
     """
 
     lista_distancias = []
-    lista_todos_usuarios = ut.get_id_todos_os_usuarios()
+    lista_todos_usuarios = util.get_id_todos_os_usuarios()
     if qntd_usuarios_analisados:
         lista_todos_usuarios = lista_todos_usuarios[:qntd_usuarios_analisados]
     for usuario in lista_todos_usuarios:
         distancia = distancia_dois_usuarios(usuario_raiz, usuario)
         lista_distancias.append(distancia)
+    lista_distancias = list(filter(None, lista_distancias))
+    tabela_similaridade = pd.DataFrame(lista_distancias,
+                                       columns=["usuario_raiz",
+                                                "usuario_destino",
+                                                "distancia"])
+    return tabela_similaridade
+
+
+def distancia_um_para_posteriores(usuario_raiz, qntd_usuarios_analisados=None):
+    """
+    Adaptação do método distancia_um_para_todos para calcular somente
+    a distancia para os usuarios com id de valor superior, para evitar
+    repetições de arestas na geração do grafo.
+
+    Keyword arguments:
+    usuario_raiz -- id do usuário raiz
+    qntd_usuarios_analisados -- Número de usuários a serem analisados,
+        default: None
+    """
+    lista_distancias = []
+    lista_todos_usuarios = [str(usuario) for usuario in util.get_id_todos_os_usuarios()]
+
+    if qntd_usuarios_analisados:
+        lista_todos_usuarios = lista_todos_usuarios[:qntd_usuarios_analisados]
+    for usuario_destino in lista_todos_usuarios:
+        if usuario_destino > usuario_raiz:
+            distancia = distancia_dois_usuarios(usuario_raiz, usuario_destino)
+            lista_distancias.append(distancia)
     lista_distancias = list(filter(None, lista_distancias))
     tabela_similaridade = pd.DataFrame(lista_distancias,
                                        columns=["usuario_raiz",
@@ -94,16 +124,19 @@ def mais_proximos(usuario_raiz, qntd_usuarios_mais_proximos=10,
     return maior_similaridade
 
 
-def gerarGrafo(usuario_raiz):
-    grafo = ut.lerGrafo()
-    all_users = ut.get_id_todos_os_usuarios()
+def gerar_grafo(qntd_usuarios_analisados=None):
+    vertices = [str(vertice) for vertice in util.get_id_todos_os_usuarios()]
+    if qntd_usuarios_analisados:
+        vertices = vertices[:qntd_usuarios_analisados]
+    arestas = []
+    for idx, usuario in enumerate(vertices):
+        tabela_similaridade = distancia_um_para_posteriores(usuario, qntd_usuarios_analisados=qntd_usuarios_analisados)
+        tabela_similaridade = tabela_similaridade[tabela_similaridade.usuario_destino != usuario]
+        for index, row in tabela_similaridade.iterrows():
+            arestas.append(f"{int(row['usuario_raiz'])}-{int(row['usuario_destino'])}-{row['distancia']}")
+        print(f"\nUSUARIO {idx+1} OK!")
 
-    distancia_entre_usuarios = distancia_um_para_todos(usuario_raiz)
-    lista_distancia = list(distancia_entre_usuarios["distancia"])
+    grafo = Grafo(False, True, vertices, arestas)
 
-    for x in range(1, len(all_users)+1):
-        grafo[str(f"{x}")] = []
-
-    grafo[str(f"{usuario_raiz}")] = lista_distancia
-    return grafo
-
+    with open("grafo.json", "w") as grafos_json:
+        grafos_json.write(encode(grafo) + "\n")
