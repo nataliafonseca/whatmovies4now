@@ -24,4 +24,6 @@ print(f"RECOMENDAÇÕES PARA O USUÁRIO {usuario}:")
 print("-" * 50)
 print()
 
-print(recomendar_para_usuario(usuario).to_markdown())
+print(recomendar_para_usuario(str(usuario)))
+
+input("\nENTER para finalizar...")

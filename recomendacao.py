@@ -27,11 +27,8 @@ def recomendar_para_usuario(usuario, qntd_usuarios_analisados=None, qntd_usuario
     # Depois, vamos calcular os usuários mais similares ao raiz, por
     # padrão, selecionam-se 10
     usuarios_mais_similares = similaridade.mais_proximos(usuario, qntd_usuarios_analisados=qntd_usuarios_analisados, qntd_usuarios_mais_proximos=qntd_usuarios_mais_proximos)
-    # Os índices desta DataFrame corresponderão às ids dos usuários
-    # similares que estão sendo considerados
-    usuarios_mais_similares_lista_ids = usuarios_mais_similares.index
     # Atualizamos a qntd_usuarios_mais_proximos para corresponder ao real utilizado
-    qntd_usuarios_mais_proximos = usuarios_mais_similares['usuario_raiz'].count()
+    qntd_usuarios_mais_proximos = len(usuarios_mais_similares)
 
     # Então, pegamos todas as notas de todos os filmes que tem pelo
     # menos 50 avaliações
@@ -41,7 +38,7 @@ def recomendar_para_usuario(usuario, qntd_usuarios_analisados=None, qntd_usuario
     # em seguida, setamos o índice para "userId" para buscar apenas
     # as notas dos usuários similares
     notas_filmes_50_ou_mais = notas_filmes_50_ou_mais.reset_index()
-    notas_dos_similares = notas_filmes_50_ou_mais.set_index("userId").loc[usuarios_mais_similares_lista_ids]
+    notas_dos_similares = notas_filmes_50_ou_mais.set_index("userId").loc[[int(userid) for userid in usuarios_mais_similares]]
     # Calculamos a média de cada filme considerando apenas as notas dos usuários similares
     media_notas_dos_similares = notas_dos_similares.groupby("movieId").mean()[["rating"]]
     # Contamos a quantidade de avaliações de cada filme pelos usuários
@@ -65,4 +62,3 @@ def recomendar_para_usuario(usuario, qntd_usuarios_analisados=None, qntd_usuario
     # Retorna-se a lista gerada, na quantidade solicitada na chamada do
     # método
     return recomendacoes.head(qntd_recomendacoes)
-

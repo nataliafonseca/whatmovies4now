@@ -1,6 +1,5 @@
 # Imports necessários
 import pandas as pd
-import json
 
 # Preparando o Dataset
 idx = pd.IndexSlice
@@ -60,17 +59,3 @@ def get_filmes_50_votos_ou_mais():
     all_movies = movies.sort_values("ratingsCount", ascending=False)
     movies_50_rates = all_movies.query("ratingsCount >= 50")
     return movies_50_rates
-
-
-def lerGrafo():
-    """
-    Ler o arquivo grafo.json e retorna um dicionário com todos os dados do grafo.
-    """
-    with open("grafo.json") as grf:
-        arq = json.load(grf)
-        grafo = arq["grafo"]
-        dic = {}
-        for v in grafo:
-            dic[v] = arq[v]
-        return dic
-
