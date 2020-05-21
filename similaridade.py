@@ -107,6 +107,17 @@ def mais_proximos(usuario_raiz, qntd_usuarios_mais_proximos=10,
         serem retornados, default: 10
     """
 
-    grafo_usuario = gerar_grafo_do_usuario(usuario_raiz, qntd_usuarios_analisados=qntd_usuarios_analisados)
+    grafo_usuario = Grafo.resgatar_grafo(str(usuario_raiz))
     maior_similaridade = grafo_usuario.dijkstra_com_parada(usuario_raiz, k=qntd_usuarios_mais_proximos)
     return maior_similaridade
+
+
+def gerar_grafos_json():
+    """
+    Gera os grafos dos usuários e salva no arquivo grafos.json
+    """
+    usuarios = [str(user) for user in util.get_id_todos_os_usuarios()]
+    for i, userid in enumerate(usuarios):
+        grafo = gerar_grafo_do_usuario(userid)
+        grafo.salvar_grafo(userid)
+        print(f"USUARIO {i+1} OK!")

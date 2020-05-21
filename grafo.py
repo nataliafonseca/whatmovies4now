@@ -1,5 +1,6 @@
 from datetime import datetime
 from copy import deepcopy
+from jsonpickle import encode, decode
 
 
 class Grafo:
@@ -21,6 +22,43 @@ class Grafo:
         self._vertices = vertices
         self._arestas = arestas
         self._max_peso = 1
+
+    def salvar_grafo(self, id_grafo):
+        """Método que adiciona as informações da instância da classe
+        Grafo ao arquivo 'grafos.json', permitindo que seja resgatado
+        mais tarde."""
+        self._id_grafo = id_grafo
+        with open("grafos.json", "a") as grafos_json:
+            grafos_json.write(encode(self) + "\n")
+
+    # @staticmethod
+    # def resgatar_grafo(grafo_id):
+    #     """
+    #     Método que retorna o grafo correspondente à id, caso este esteja
+    #     no arquivo grafos.json
+    #     """
+    #     with open("grafos.json", "r") as grafos_json:
+    #         for line in grafos_json:
+    #             grafo = decode(line)
+    #             if grafo._id_grafo == grafo_id:
+    #                 return grafo
+    #         print()
+    #         print("ERRO: Grafo não encontrado.")
+
+    @staticmethod
+    def resgatar_grafo(grafo_id):
+        """
+        Método que retorna o grafo correspondente à id, caso este esteja
+        no arquivo grafos.json
+        """
+        linha_buscada = int(grafo_id)
+        linha_atual = 1
+        with open("grafos.json", "r") as grafos_json:
+            for line in grafos_json:
+                if linha_atual == linha_buscada:
+                    grafo = decode(line)
+                    return grafo
+                linha_atual += 1
 
     def estrutura_adjacencia(self):
         """
