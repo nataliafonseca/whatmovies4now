@@ -1,10 +1,11 @@
 # Imports necessários
 import similaridade
 import util
+import pandas as pd
 
 
 # Funções para a recomendação
-def recomendar_para_usuario(usuario, qntd_usuarios_analisados=None, qntd_usuarios_mais_proximos=10, qntd_recomendacoes=10):
+def recomendar_para_usuario(usuario):
     """
     Retorna os filmes recomendados para o usuário informado.
 
@@ -24,41 +25,61 @@ def recomendar_para_usuario(usuario, qntd_usuarios_analisados=None, qntd_usuario
     # assistidos pelo usuário
     filmes_ja_assistidos = notas_do_usuario.index
 
-    # Depois, vamos calcular os usuários mais similares ao raiz, por
-    # padrão, selecionam-se 10
-    usuarios_mais_similares = similaridade.mais_proximos(usuario, qntd_usuarios_analisados=qntd_usuarios_analisados, qntd_usuarios_mais_proximos=qntd_usuarios_mais_proximos)
-    # Atualizamos a qntd_usuarios_mais_proximos para corresponder ao real utilizado
-    qntd_usuarios_mais_proximos = len(usuarios_mais_similares)
+    # Depois, vamos calcular os usuários mais similares. São 3 listas,
+    # correspondente a 3 camadas de proximidade.
+    mais_proximos = similaridade.mais_proximos(usuario)
+
+    # Se o usuário não tem nenhum usuário proximo, retorna None
+    if not mais_proximos:
+        return None
 
     # Então, pegamos todas as notas de todos os filmes que tem pelo
     # menos 50 avaliações
     notas_filmes_50_ou_mais = util.get_todas_as_notas().set_index("movieId").loc[util.get_filmes_50_votos_ou_mais().index]
 
-    # Resetamos o índice da DataFrame para restaurar a coluna "MovieId",
-    # em seguida, setamos o índice para "userId" para buscar apenas
-    # as notas dos usuários similares
-    notas_filmes_50_ou_mais = notas_filmes_50_ou_mais.reset_index()
-    notas_dos_similares = notas_filmes_50_ou_mais.set_index("userId").loc[[int(userid) for userid in usuarios_mais_similares]]
-    # Calculamos a média de cada filme considerando apenas as notas dos usuários similares
-    media_notas_dos_similares = notas_dos_similares.groupby("movieId").mean()[["rating"]]
-    # Contamos a quantidade de avaliações de cada filme pelos usuários
-    # similares
-    qntd_visualizacoes = notas_dos_similares.groupby("movieId").count()[["rating"]]
+    recomendacoes_camada1 = None
+    recomendacoes_camada2 = None
+    recomendacoes_camada3 = None
+    for i, camada in enumerate(mais_proximos):
+        # Resetamos o índice da DataFrame para restaurar a coluna "MovieId",
+        # em seguida, setamos o índice para "userId" para buscar apenas
+        # as notas dos usuários similares
+        notas_filmes_50_ou_mais = notas_filmes_50_ou_mais.reset_index()
+        notas_dos_similares = notas_filmes_50_ou_mais.set_index("userId").loc[[int(userid) for userid in camada]]
+        # Calculamos a média de cada filme considerando apenas as notas dos usuários similares
+        media_notas_dos_similares = notas_dos_similares.groupby("movieId").mean()[["rating"]]
+        # Contamos a quantidade de avaliações de cada filme pelos usuários
+        # similares
+        qntd_visualizacoes = notas_dos_similares.groupby("movieId").count()[["rating"]]
 
-    # Unificamos as tabela de média e quantidade de avaliações.
-    recomendacoes = media_notas_dos_similares.join(qntd_visualizacoes, lsuffix="_media", rsuffix="_qntd_avaliacoes")
+        # Unificamos as tabela de média e quantidade de avaliações.
+        recomendacoes = media_notas_dos_similares.join(qntd_visualizacoes, lsuffix="_media", rsuffix="_qntd_avaliacoes")
 
-    # Filtramos os filmes que foram assistidos por, pelo menos, um terço
-    # dos usuários próximos e ordenamos pelas médias
-    filtro = int(qntd_usuarios_mais_proximos / 3)
-    recomendacoes = recomendacoes.query(f"rating_qntd_avaliacoes >= {filtro}")
-    recomendacoes = recomendacoes.sort_values("rating_media", ascending=False)
-    # Os filmes que já foram assistidos pelo usuário são removidos dessa
-    # lista
-    recomendacoes = recomendacoes.drop(filmes_ja_assistidos, errors="ignore")
-    # Por fim, unimos à lista os titulos e demais informações dos filmes
-    recomendacoes = recomendacoes.join(util.get_filmes_50_votos_ou_mais())
+        # Filtramos os filmes que foram assistidos por, pelo menos, um quarto
+        # dos usuários próximos e ordenamos pelas médias
+        filtro = int(len(camada) / 4)
+        recomendacoes = recomendacoes.query(f"rating_qntd_avaliacoes >= {filtro}")
+        recomendacoes = recomendacoes.sort_values("rating_media", ascending=False)
+        # Os filmes que já foram assistidos pelo usuário são removidos dessa
+        # lista
+        recomendacoes = recomendacoes.drop(filmes_ja_assistidos, errors="ignore")
+        # Por fim, unimos à lista os titulos e demais informações dos filmes
+        recomendacoes = recomendacoes.join(util.get_filmes_50_votos_ou_mais())
+        notas_filmes_50_ou_mais = notas_filmes_50_ou_mais.set_index("movieId")
 
-    # Retorna-se a lista gerada, na quantidade solicitada na chamada do
-    # método
-    return recomendacoes.head(qntd_recomendacoes)
+        if i == 0:
+            recomendacoes_camada1 = recomendacoes.head(5)
+            recomendados = recomendacoes_camada1.index
+            notas_filmes_50_ou_mais = notas_filmes_50_ou_mais.drop(recomendados, errors='ignore')
+        elif i == 1:
+            recomendacoes_camada2 = recomendacoes.head(3)
+            recomendados = recomendacoes_camada2.index
+            notas_filmes_50_ou_mais = notas_filmes_50_ou_mais.drop(recomendados, errors='ignore')
+        elif i == 2:
+            recomendacoes_camada3 = recomendacoes.head(2)
+
+    recomendacoes = pd.concat([recomendacoes_camada1, recomendacoes_camada2, recomendacoes_camada3])
+
+    # Retorna-se a lista de recomendações, sendo 5 da primeira camada,
+    # 3 da segunda e 2 da terceira
+    return recomendacoes

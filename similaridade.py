@@ -71,7 +71,7 @@ def distancia_um_para_todos(usuario_raiz, qntd_usuarios_analisados=None):
     return tabela_similaridade
 
 
-def gerar_grafo_do_usuario(usuario, qntd_usuarios_analisados=None):
+def gerar_grafo(qntd_usuarios_analisados=None, distancia_maxima=2):
     """
     Gera um grafo para o usuário analisado e salva em grafo.json
 
@@ -79,45 +79,29 @@ def gerar_grafo_do_usuario(usuario, qntd_usuarios_analisados=None):
     qntd_usuarios_analisados -- Número de usuários a serem analisados,
         default: None
     """
-    vertices = [str(usuario)]
+    vertices = [str(usuario) for usuario in util.get_id_todos_os_usuarios()[:qntd_usuarios_analisados]]
     arestas = []
-    tabela_similaridade = distancia_um_para_todos(usuario, qntd_usuarios_analisados=qntd_usuarios_analisados)
-    tabela_similaridade = tabela_similaridade[tabela_similaridade.usuario_destino != usuario]
-    for index, row in tabela_similaridade.iterrows():
-        vertices.append(f"{int(row['usuario_destino'])}")
-        arestas.append(f"{int(row['usuario_raiz'])}-{int(row['usuario_destino'])}-{row['distancia']}")
-
-    grafo = Grafo(False, True, vertices, arestas)
-
+    for i, user1 in enumerate(vertices):
+        for user2 in vertices:
+            if user1 != user2 and distancia_dois_usuarios(user1, user2):
+                distancia = distancia_dois_usuarios(user1, user2)[2]
+                if distancia <= distancia_maxima:
+                    arestas.append(f"{user1}-{user2}")
+        print(f"USUARIO {i+1}: OK!")
+    grafo = Grafo(False, False, vertices, arestas)
+    grafo.salvar_grafo("usuarios")
     return grafo
 
 
-def mais_proximos(usuario_raiz, qntd_usuarios_mais_proximos=10,
-                  qntd_usuarios_analisados=None):
+def mais_proximos(usuario_raiz):
     """
-    Retorna os valores em ordem de similaridade do usuário raiz com
-    todos os outros usuários, excluindo o próprio usuário raiz.
-    (Algoritmo de KNN - k-nearest neighbors algorithm)
+    Retorna três camadas de usuários próximos. A primeira, os usuarios
+    que estão diretamente conectados ao usuário raiz. A segunda, os que
+    estão conectados a estes. A terceira, os conectados aos usuários da
+    segunda.
 
     Keyword arguments:
     usuario_raiz -- id do usuário raiz
-    qntd_usuarios_analisados -- Número de usuários a serem analisados,
-        default: None
-    qntd_usuarios_mais_proximos -- Quantidade de usuários próximos a
-        serem retornados, default: 10
     """
-
-    grafo_usuario = Grafo.resgatar_grafo(str(usuario_raiz))
-    maior_similaridade = grafo_usuario.dijkstra_com_parada(usuario_raiz, k=qntd_usuarios_mais_proximos)
-    return maior_similaridade
-
-
-def gerar_grafos_json():
-    """
-    Gera os grafos dos usuários e salva no arquivo grafos.json
-    """
-    usuarios = [str(user) for user in util.get_id_todos_os_usuarios()]
-    for i, userid in enumerate(usuarios):
-        grafo = gerar_grafo_do_usuario(userid)
-        grafo.salvar_grafo(userid)
-        print(f"USUARIO {i+1} OK!")
+    grafo = Grafo.resgatar_grafo()
+    return grafo.busca_largura(usuario_raiz)

@@ -24,41 +24,20 @@ class Grafo:
         self._max_peso = 1
 
     def salvar_grafo(self, id_grafo):
-        """Método que adiciona as informações da instância da classe
-        Grafo ao arquivo 'grafos.json', permitindo que seja resgatado
-        mais tarde."""
+        """Método que gera o arquivo 'grafo.json' a partir do grafo,
+        permitindo que seja resgatado mais tarde."""
         self._id_grafo = id_grafo
-        with open("grafos.json", "a") as grafos_json:
-            grafos_json.write(encode(self) + "\n")
-
-    # @staticmethod
-    # def resgatar_grafo(grafo_id):
-    #     """
-    #     Método que retorna o grafo correspondente à id, caso este esteja
-    #     no arquivo grafos.json
-    #     """
-    #     with open("grafos.json", "r") as grafos_json:
-    #         for line in grafos_json:
-    #             grafo = decode(line)
-    #             if grafo._id_grafo == grafo_id:
-    #                 return grafo
-    #         print()
-    #         print("ERRO: Grafo não encontrado.")
+        with open("grafo.json", "w") as grafos_json:
+            grafos_json.write(encode(self))
 
     @staticmethod
-    def resgatar_grafo(grafo_id):
+    def resgatar_grafo():
         """
-        Método que retorna o grafo correspondente à id, caso este esteja
-        no arquivo grafos.json
+        Método que retorna o grafo no arquivo grafo.json
         """
-        linha_buscada = int(grafo_id)
-        linha_atual = 1
-        with open("grafos.json", "r") as grafos_json:
-            for line in grafos_json:
-                if linha_atual == linha_buscada:
-                    grafo = decode(line)
-                    return grafo
-                linha_atual += 1
+        with open("grafo.json", "r") as grafo_json:
+            grafo = decode(grafo_json.read())
+            return grafo
 
     def estrutura_adjacencia(self):
         """
@@ -74,18 +53,12 @@ class Grafo:
                 i, j, p = trio.strip().split("-")
                 p = float(p)
                 estrutura_adjacencia[i].append({'vertice_id': j, 'peso': p})
-                if not self._digrafo:
-                    estrutura_adjacencia[j].append({'vertice_id': i,
-                                                    'peso': p})
                 if p > self._max_peso:
                     self._max_peso = p
         else:
             for par in arestas:
                 i, j = par.strip().split("-")
                 estrutura_adjacencia[i].append({'vertice_id': j, 'peso': 1})
-                if not self._digrafo:
-                    estrutura_adjacencia[j].append({'vertice_id': i,
-                                                    'peso': 1})
         return estrutura_adjacencia
 
     def get_adjacentes(self, vertice):
@@ -112,6 +85,38 @@ class Grafo:
             adjacentes.append(i['vertice_id'])
             pesos.append(i['peso'])
         return adjacentes, pesos
+
+    def busca_largura(self, vertice_inicial, qntd_camadas=3):
+        """
+        Método privado que aplica a lógica da busca em largura,
+        recebendo um vértice inicial e buscando até que se zere a fila,
+         o retorno é a árvore de vértices visitados, em ordem.
+        """
+        fila = [vertice_inicial]
+        vertices_visitados = [[vertice_inicial]]
+
+        while fila and len(vertices_visitados) <= (qntd_camadas+1):
+            vertice = fila[0]
+            camada = 0
+            for i, lista in enumerate(vertices_visitados):
+                if vertice in lista:
+                    camada = i
+                    break
+            fila.pop(0)
+            for w in self.get_adjacentes(vertice):
+                foi_visitado = False
+                for lista in vertices_visitados:
+                    if w in lista:
+                        foi_visitado = True
+                        break
+                if not foi_visitado:
+                    fila.append(w)
+                    if len(vertices_visitados) > (camada+1):
+                        vertices_visitados[camada+1].append(w)
+                    else:
+                        vertices_visitados.append([w])
+
+        return vertices_visitados[1:4]
 
     def dijkstra_com_parada(self, v_origem, k=10):
         """
