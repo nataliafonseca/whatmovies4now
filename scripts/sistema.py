@@ -1,4 +1,5 @@
 from recomendacao import recomendar_para_usuario
+from tinydb import TinyDB, Query
 
 
 def definir_usuario():
@@ -16,14 +17,20 @@ def definir_usuario():
         return definir_usuario()
 
 
-usuario = definir_usuario()
+def imprimir_recomendacoes(usuario):
+    recomendacoes = recomendar_para_usuario(str(usuario))
+    print("-" * 50)
+    print(f"RECOMENDAÇÕES PARA O USUÁRIO {usuario}:")
+    print("-" * 50)
+    for filme in recomendacoes:
+        print(f"Título: {filme['title']}"
+              f"\nAno: {filme['year']}"
+              f"\nNota: {filme['rating']}"
+              f"\nPoster: {filme['poster']}")
+        print("-" * 50)
 
-print()
-print("-" * 50)
-print(f"RECOMENDAÇÕES PARA O USUÁRIO {usuario}:")
-print("-" * 50)
-print()
 
-print(recomendar_para_usuario(str(usuario)))
+user = definir_usuario()
+imprimir_recomendacoes(user)
 
 input("\nENTER para finalizar...")

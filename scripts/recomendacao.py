@@ -1,6 +1,7 @@
 # Imports necessários
 import similaridade
 import util
+import imdb_to_db
 import pandas as pd
 
 
@@ -79,6 +80,8 @@ def recomendar_para_usuario(usuario):
             recomendacoes_camada3 = recomendacoes.head(2)
 
     recomendacoes = pd.concat([recomendacoes_camada1, recomendacoes_camada2, recomendacoes_camada3])
+    recomendacoes = [int(filme) for filme in recomendacoes.index]
+    recomendacoes = [imdb_to_db.busca_por_id(filme) for filme in recomendacoes]
 
     # Retorna-se a lista de recomendações, sendo 5 da primeira camada,
     # 3 da segunda e 2 da terceira
