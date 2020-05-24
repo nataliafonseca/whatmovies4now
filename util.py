@@ -7,6 +7,8 @@ movies = pd.read_csv("dados/movies.csv", index_col=['movieId'])
 ratings = pd.read_csv("dados/ratings.csv")
 quantidade_de_avaliacoes = ratings["movieId"].value_counts()
 movies['ratingsCount'] = quantidade_de_avaliacoes
+notas_medias = ratings.groupby("movieId").mean()["rating"]
+movies['rating'] = notas_medias
 
 
 # Métodos Auxiliares
