@@ -14,7 +14,7 @@ def index():
     return render_template("index.html")
 
 
-#Rota recomendação ("/recommend")
+# Rota recomendação ("/recommend")
 @app.route('/recommend/<user_id>')
 def recommend(user_id):
 
@@ -22,14 +22,14 @@ def recommend(user_id):
 
     recomendacao_usuario = recomendacao.recomendar_para_usuario(user_id)
 
-    if recomendacao_usuario == None:
+    if recomendacao_usuario is None:
         rec1 = None
         rec2 = None
     else:
         rec1 = recomendacao_usuario[0:5]
         rec2 = recomendacao_usuario[5:10]
 
-    if filmes_assistidos_usuario == None:
+    if filmes_assistidos_usuario is None:
         assistidos1 = None
         assistidos2 = None
     else:

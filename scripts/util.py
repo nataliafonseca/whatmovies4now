@@ -5,10 +5,12 @@ import pandas as pd
 idx = pd.IndexSlice
 movies = pd.read_csv("dados/movies.csv", index_col=['movieId'])
 ratings = pd.read_csv("dados/ratings.csv")
+links = pd.read_csv("dados/links.csv").set_index("movieId").drop('tmdbId', axis=1)
 quantidade_de_avaliacoes = ratings["movieId"].value_counts()
 movies['ratingsCount'] = quantidade_de_avaliacoes
 notas_medias = ratings.groupby("movieId").mean()["rating"]
 movies['rating'] = notas_medias
+movies['imdbId'] = links
 
 
 # Métodos Auxiliares

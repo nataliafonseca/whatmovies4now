@@ -1,5 +1,5 @@
 from scripts.recomendacao import recomendar_para_usuario
-from tinydb import TinyDB, Query
+from scripts.filmes_assistidos import ultimos_vistos
 
 
 def definir_usuario():
@@ -17,6 +17,19 @@ def definir_usuario():
         return definir_usuario()
 
 
+def imprimir_recentes(usuario):
+    recentes = ultimos_vistos(str(usuario))
+    print("-" * 50)
+    print(f"ULTIMOS VISTOS PELO USUÁRIO {usuario}:")
+    print("-" * 50)
+    for filme in recentes:
+        print(f"Título: {filme['title']}"
+              f"\nAno: {filme['year']}"
+              f"\nNota: {filme['rating']}"
+              f"\nPoster: {filme['poster']}")
+        print("-" * 50)
+
+
 def imprimir_recomendacoes(usuario):
     recomendacoes = recomendar_para_usuario(str(usuario))
     print("-" * 50)
@@ -31,6 +44,8 @@ def imprimir_recomendacoes(usuario):
 
 
 user = definir_usuario()
+imprimir_recentes(user)
 imprimir_recomendacoes(user)
+
 
 input("\nENTER para finalizar...")
