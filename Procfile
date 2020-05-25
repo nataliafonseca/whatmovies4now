@@ -1,1 +1,1 @@
-web: whatmovies4now.py
+web: python whatmovies4now.py

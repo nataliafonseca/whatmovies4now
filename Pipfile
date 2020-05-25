@@ -6,12 +6,23 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+click = "==7.1.2"
+importlib-metadata = "==1.6.0"
+itsdangerous = "==1.1.0"
+jsonpickle = "==1.4.1"
+lxml = "==4.5.1"
 numpy = "==1.18.4"
 pandas = "==1.0.3"
-jsonpickle = "*"
-tinydb = "*"
-imdbpy = "*"
-flask = "*"
+python-dateutil = "==2.8.1"
+pytz = "==2020.1"
+six = "==1.15.0"
+tinydb = "==4.1.1"
+zipp = "==3.1.0"
+Flask = "==1.1.2"
+IMDbPY = "==6.8"
+Jinja2 = "==2.11.2"
+MarkupSafe = "==1.1.1"
+Werkzeug = "==1.0.1"
 
 [requires]
 python_version = "3.8"
