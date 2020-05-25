@@ -27,6 +27,20 @@ def get_notas_por_usuario(usuario):
     return notas_por_usuario
 
 
+def get_filmes_por_usuario(usuario):
+    """
+    Retorna todos os filmes que o usuário (passado por parametro) assistiu.
+
+    Keyword arguments:
+    usuario -- id do usuário
+    """
+
+    filmes_por_usuario = ratings.query(f"userId=={usuario}")
+    filmes_por_usuario = filmes_por_usuario[
+        ["userId", "movieId"]].set_index("userId")
+    return filmes_por_usuario
+
+
 def get_id_todos_os_usuarios():
     """
     Retorna os id de todos os usários.

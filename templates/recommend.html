@@ -1,14 +1,151 @@
-{% extends "template.html" %}
-{% block content %}
+{% extends "template.html" %} {% block content %}
 <!--Filmes assistidos pelo usuário-->
 <div class="banner">
-    <img class="banner-image" src="../static/images/filmes.png" style="width: 15vw; margin-left: 50px; margin-top: 20px;">
+  <img
+    class="banner-image"
+    src="../static/images/filmes.png"
+    style="width: 15vw; margin-left: 50px; margin-top: 20px;"
+  />
 </div>
 
-</br>
+<div class="w3-container w3-black" style="margin: 25px; margin-bottom: 0px;">
+  <div class="row">
+    <div class="col-md-1"></div>
+    {% for movie in args['assistidos1'] %}
+    <div class="col-md-2">
+      <center>
+        {% if movie['poster'] == "https://i.imgur.com/IUozMIm.png"  %}
+        <img src="../static/images/no-image.jpg" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% else %}
+        <img src="{{ movie['poster']}}" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% endif %}
+        <p style="font-size: 15px;"><b>{{ movie['title'] }}</b></p>
+        <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-1">
+            <p>{{ movie['year'] }}</p>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-1">
+            <img src="../static/images/star-rating.png" style="width: 1vw;" />
+          </div>
+          <div class="col-md-1">
+            <p>{{ movie['rating'] }}</p>
+          </div>
+        </div>
+      </center>
+    </div>
+    {% endfor %}
+    <div class="col-md-1"></div>
+  </div>
+</div>
 
+<div class="w3-container w3-black" style="margin: 25px; margin-top: 0px;">
+  <div class="row">
+    <div class="col-md-1"></div>
+    {% for movie in args['assistidos2'] %}
+    <div class="col-md-2">
+      <center>
+        {% if movie['poster'] == "https://i.imgur.com/IUozMIm.png"  %}
+        <img src="../static/images/no-image.jpg" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% else %}
+        <img src="{{ movie['poster']}}" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% endif %}
+        <p style="font-size: 15px;"><b>{{ movie['title'] }}</b></p>
+        <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-1">
+            <p>{{ movie['year'] }}</p>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-1">
+            <img src="../static/images/star-rating.png" style="width: 1vw;" />
+          </div>
+          <div class="col-md-1">
+            <p>{{ movie['rating'] }}</p>
+          </div>
+        </div>
+      </center>
+    </div>
+    {% endfor %}
+    <div class="col-md-1"></div>
+  </div>
+</div>
 <!--Filmes recomendados para o usuário-->
 <div class="banner">
-  <img class="banner-image" src="../static/images/recomendados.png" style="width: 15vw; margin-left: 50px; margin-top: 150px;">
+  <img
+    class="banner-image"
+    src="../static/images/recomendados.png"
+    style="width: 15vw; margin-left: 50px; margin-top: 150px;"
+  />
 </div>
-{% endblock %}
+
+{% if args['rec1'] == None %}
+<h1 style="margin-top: 50px; margin-left: 50px;">
+  Não foram encontrados filmes recomendados para o usuário.
+</h1>
+{% else %}
+<div class="w3-container w3-black" style="margin: 25px; margin-bottom: 0px">
+  <div class="row">
+    <div class="col-md-1"></div>
+    {% for movie in args['rec1'] %}
+    <div class="col-md-2">
+      <center>
+        {% if movie['poster'] == "https://i.imgur.com/IUozMIm.png"  %}
+        <img src="../static/images/no-image.jpg" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% else %}
+        <img src="{{ movie['poster']}}" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% endif %}
+        <p style="font-size: 15px;"><b>{{ movie['title'] }}</b></p>
+        <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-1">
+            <p>{{ movie['year'] }}</p>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-1">
+            <img src="../static/images/star-rating.png" style="width: 1vw;" />
+          </div>
+          <div class="col-md-1">
+            <p>{{ movie['rating'] }}</p>
+          </div>
+        </div>
+      </center>
+    </div>
+    {% endfor %}
+    <div class="col-md-1"></div>
+  </div>
+</div>
+
+<div class="w3-container w3-black" style="margin: 25px; margin-top: 0px;">
+  <div class="row">
+    <div class="col-md-1"></div>
+    {% for movie in args['rec2'] %}
+    <div class="col-md-2">
+      <center>
+        {% if movie['poster'] == "https://i.imgur.com/IUozMIm.png"  %}
+        <img src="../static/images/no-image.jpg" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% else %}
+        <img src="{{ movie['poster']}}" style="width: 7vw; margin-top: 20px; border-radius: 10px; border-color: #00ADA9; border-style: solid; border-width: 3px;" />
+        {% endif %}
+        <p style="font-size: 15px;"><b>{{ movie['title'] }}</b></p>
+        <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-1">
+            <p>{{ movie['year'] }}</p>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-1">
+            <img src="../static/images/star-rating.png" style="width: 1vw;" />
+          </div>
+          <div class="col-md-1">
+            <p>{{ movie['rating'] }}</p>
+          </div>
+        </div>
+      </center>
+    </div>
+    {% endfor %}
+    <div class="col-md-1"></div>
+  </div>
+</div>
+{% endif %} {% endblock %}
