@@ -1,10 +1,10 @@
-import util
+import scripts.util as util
 from tinydb import TinyDB, Query
 from imdb import IMDb
 
 
 def generate_db(db_name='db'):
-    db = TinyDB(f'../{db_name}.json')
+    db = TinyDB(f'{db_name}.json')
 
     movies = util.get_filmes_50_votos_ou_mais()
     movieids = [str(i) for i in movies.index]
@@ -24,7 +24,7 @@ def generate_db(db_name='db'):
 
 
 def busca_por_id(movieid):
-    db = TinyDB('../db.json')
+    db = TinyDB('db.json')
     movie = Query()
     mv = db.search(movie.id == f"{movieid}")[0]
     return mv

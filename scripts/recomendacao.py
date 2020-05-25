@@ -1,7 +1,7 @@
 # Imports necessários
-import similaridade
-import util
-import imdb_to_db
+import scripts.similaridade as similaridade
+import scripts.util as util
+import scripts.imdb_to_db as imdb_to_db
 import pandas as pd
 
 

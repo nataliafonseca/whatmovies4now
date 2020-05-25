@@ -1,4 +1,4 @@
-from recomendacao import recomendar_para_usuario
+from scripts.recomendacao import recomendar_para_usuario
 from tinydb import TinyDB, Query
 
 

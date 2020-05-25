@@ -1,8 +1,8 @@
 # Imports necessários
 import numpy as np
 import pandas as pd
-import util
-from grafo import Grafo
+import scripts.util as util
+from scripts.grafo import Grafo
 
 
 # Funções para o calculo de similaridade

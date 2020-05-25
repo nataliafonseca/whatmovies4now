@@ -27,7 +27,7 @@ class Grafo:
         """Método que gera o arquivo 'grafo.json' a partir do grafo,
         permitindo que seja resgatado mais tarde."""
         self._id_grafo = id_grafo
-        with open("grafo.json", "w") as grafos_json:
+        with open("scripts/grafo.json", "w") as grafos_json:
             grafos_json.write(encode(self))
 
     @staticmethod
@@ -35,7 +35,7 @@ class Grafo:
         """
         Método que retorna o grafo no arquivo grafo.json
         """
-        with open("grafo.json", "r") as grafo_json:
+        with open("scripts/grafo.json", "r") as grafo_json:
             grafo = decode(grafo_json.read())
             return grafo
 
