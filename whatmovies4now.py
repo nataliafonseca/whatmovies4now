@@ -1,4 +1,5 @@
 # Imports necessários
+import os
 from flask import Flask, render_template
 import scripts.recomendacao as recomendacao
 import scripts.filmes_assistidos as filmes_assistidos
@@ -52,4 +53,5 @@ def recommend(user_id):
 
 # Inicializador do projeto com debug
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
