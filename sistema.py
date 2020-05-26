@@ -18,6 +18,9 @@ def definir_usuario():
 
 
 def imprimir_recentes(usuario):
+    """
+    Imprime os filmes recentes assistidos pelo usuário
+    """
     recentes = ultimos_vistos(str(usuario))
     print("-" * 50)
     print(f"ULTIMOS VISTOS PELO USUÁRIO {usuario}:")
@@ -31,6 +34,9 @@ def imprimir_recentes(usuario):
 
 
 def imprimir_recomendacoes(usuario):
+    """
+    Imprime a recomendação de filmes para o pelo usuário
+    """
     recomendacoes = recomendar_para_usuario(str(usuario))
     print("-" * 50)
     print(f"RECOMENDAÇÕES PARA O USUÁRIO {usuario}:")

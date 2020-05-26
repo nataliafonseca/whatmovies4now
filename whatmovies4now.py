@@ -22,6 +22,7 @@ def recommend(user_id):
 
     recomendacao_usuario = recomendacao.recomendar_para_usuario(user_id)
 
+    #Tratamento se o usuário não possuir recomendação ou filmes assistidos
     if recomendacao_usuario is None:
         rec1 = None
         rec2 = None
