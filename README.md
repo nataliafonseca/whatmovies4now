@@ -32,8 +32,9 @@ No final da página "recommend.html" possui um Footer com os nomes dos desenvolv
 
 <b>Index.html:</b>
 
-![Index](https://imgur.com/zn0KSHZ)
+![Index](https://i.imgur.com/zn0KSHZ.jpg)
+
 
 <b>Recommend.html:</b>
 
-![Recommend](https://imgur.com/hK8Fgpe)
+![Recommend](https://i.imgur.com/hK8Fgpe.jpg)
