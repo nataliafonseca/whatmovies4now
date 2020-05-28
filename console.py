@@ -25,12 +25,15 @@ def imprimir_recentes(usuario):
     print("-" * 50)
     print(f"ULTIMOS VISTOS PELO USUÁRIO {usuario}:")
     print("-" * 50)
-    for filme in recentes:
-        print(f"Título: {filme['title']}"
-              f"\nAno: {filme['year']}"
-              f"\nNota: {filme['rating']}"
-              f"\nPoster: {filme['poster']}")
-        print("-" * 50)
+    if recentes:
+        for filme in recentes:
+            print(f"Título: {filme['title']}"
+                  f"\nAno: {filme['year']}"
+                  f"\nNota: {filme['rating']}"
+                  f"\nPoster: {filme['poster']}")
+            print("-" * 50)
+    else:
+        print("O usuário ainda não assistiu nenhum filme.")
 
 
 def imprimir_recomendacoes(usuario):
@@ -41,12 +44,15 @@ def imprimir_recomendacoes(usuario):
     print("-" * 50)
     print(f"RECOMENDAÇÕES PARA O USUÁRIO {usuario}:")
     print("-" * 50)
-    for filme in recomendacoes:
-        print(f"Título: {filme['title']}"
-              f"\nAno: {filme['year']}"
-              f"\nNota: {filme['rating']}"
-              f"\nPoster: {filme['poster']}")
-        print("-" * 50)
+    if recomendacoes:
+        for filme in recomendacoes:
+            print(f"Título: {filme['title']}"
+                  f"\nAno: {filme['year']}"
+                  f"\nNota: {filme['rating']}"
+                  f"\nPoster: {filme['poster']}")
+            print("-" * 50)
+    else:
+        print("O usuário ainda não possui recomendações.")
 
 
 user = definir_usuario()
