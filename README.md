@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ## Inicialização do sistema
 Para a inicialização da interface do sistema, execute o arquivo "whatmovies4now.py" na pasta raiz do projeto e, uma vez iniciado o servidor, faça o acesso pelo endereço `127.0.0.1:5000`, que o levará para página inicial.  
 O sistema também pode ser acessado através do link: https://whatmovies4now.herokuapp.com/  
-Se preferir executar o sistema pelo console, execute o arquivo "console.py".  
+Se preferir executar o sistema pela linha de comando, execute o arquivo "console.py".  
 
 ## Sistema de recomendação por Collaborative Filtering
 O sistema What movies 4 now? Utiliza técnicas de Collaborative Filtering, ou Filtragem Colaborativa, que exploram a ideia de que existem relações entre os produtos e os interesses das pessoas. Muitos sistemas de recomendação usam o Collaborative Filtering para entender essas relações e para dar uma precisa recomendação de um produto que o usuário pode gostar ou mesmo desfrutar.  
