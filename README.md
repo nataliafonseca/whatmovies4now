@@ -1,4 +1,4 @@
-# What movies 4 now?
+# What Movies 4 Now?
 Implementação de um sistema de recomendação da disciplina Teoria dos Grafos ministrada pelo professor Adolfo Guimarães na Universidade Tiradentes - UNIT.
 Desenvolvedores: Natália Braga da Fonseca e Vinícius José Santana de Mendonça
 
